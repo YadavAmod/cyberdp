@@ -31,6 +31,29 @@ document.addEventListener('click', (e) => {
     }
 });
 
+// Mobile Menu Toggle
+const navToggle = document.querySelector('.nav-toggle');
+const navbar = document.querySelector('.navbar');
+const navLinks = document.querySelectorAll('.nav-link');
+
+navToggle.addEventListener('click', () => {
+    navbar.classList.toggle('nav-open');
+});
+
+// Close mobile menu when clicking a link
+navLinks.forEach(link => {
+    link.addEventListener('click', () => {
+        navbar.classList.remove('nav-open');
+    });
+});
+
+// Close mobile menu when clicking outside
+document.addEventListener('click', (e) => {
+    if (!navbar.contains(e.target) && navbar.classList.contains('nav-open')) {
+        navbar.classList.remove('nav-open');
+    }
+});
+
 // Smooth scrolling with offset
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
@@ -257,3 +280,139 @@ window.addEventListener('scroll', () => {
         heroContent.style.transform = `translateY(${scrolled * 0.3}px)`;
     }
 });
+
+// Particles Animation
+function createParticles() {
+    const particles = document.querySelector('.particles');
+    const numberOfParticles = 50;
+
+    for (let i = 0; i < numberOfParticles; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.setProperty('--x', `${Math.random() * 100}%`);
+        particle.style.setProperty('--y', `${Math.random() * 100}%`);
+        particle.style.setProperty('--duration', `${Math.random() * 20 + 10}s`);
+        particle.style.setProperty('--delay', `${Math.random() * 5}s`);
+        particle.style.setProperty('--size', `${Math.random() * 2 + 1}px`);
+        particle.style.setProperty('--opacity', `${Math.random() * 0.5 + 0.2}`);
+        particles.appendChild(particle);
+    }
+}
+
+// Typing Animation
+document.addEventListener('DOMContentLoaded', function() {
+    const typingElement = document.querySelector('.typing');
+    const texts = [
+        "Cyber Security Intern",
+        "Ethical Hacker",
+        "Penetration Tester",
+        "Bug Hunter"
+    ];
+    let currentTextIndex = 0;
+    let currentCharIndex = 0;
+    let isDeleting = false;
+
+    function typeText() {
+        const currentText = texts[currentTextIndex];
+        
+        if (isDeleting) {
+            typingElement.textContent = currentText.substring(0, currentCharIndex);
+            currentCharIndex--;
+        } else {
+            typingElement.textContent = currentText.substring(0, currentCharIndex);
+            currentCharIndex++;
+        }
+
+        // Set typing speed
+        let typingSpeed = isDeleting ? 50 : 150;
+
+        // Handle text completion or deletion
+        if (!isDeleting && currentCharIndex === currentText.length) {
+            // Pause at the end of typing
+            typingSpeed = 1500;
+            isDeleting = true;
+        } else if (isDeleting && currentCharIndex === 0) {
+            isDeleting = false;
+            // Move to next text
+            currentTextIndex = (currentTextIndex + 1) % texts.length;
+            // Pause before starting new text
+            typingSpeed = 500;
+        }
+
+        // Continue the animation
+        setTimeout(typeText, typingSpeed);
+    }
+
+    // Initialize animations
+    createParticles();
+    typeText();
+
+    // Animate stats when they come into view
+    const stats = document.querySelectorAll('.stat');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.transform = 'translateY(0)';
+                entry.target.style.opacity = '1';
+            }
+        });
+    }, { threshold: 0.5 });
+
+    stats.forEach(stat => {
+        stat.style.transform = 'translateY(20px)';
+        stat.style.opacity = '0';
+        stat.style.transition = 'all 0.6s ease-out';
+        observer.observe(stat);
+    });
+});
+
+// Stats Counter Animation
+function animateStats() {
+    const stats = document.querySelectorAll('.stat');
+    
+    stats.forEach(stat => {
+        const target = parseInt(stat.getAttribute('data-count'));
+        const numberElement = stat.querySelector('.number');
+        let current = 0;
+        const increment = target / 50; // Divide animation into 50 steps
+        const duration = 2000; // 2 seconds
+        const stepTime = duration / 50;
+
+        const counter = setInterval(() => {
+            current += increment;
+            if (current >= target) {
+                numberElement.textContent = target;
+                clearInterval(counter);
+            } else {
+                numberElement.textContent = Math.floor(current);
+            }
+        }, stepTime);
+    });
+}
+
+// Initialize animations when page loads
+document.addEventListener('DOMContentLoaded', () => {
+    animateStats();
+});
+
+// Add this CSS to your styles.css file for particle animation
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes float {
+        0% {
+            transform: translateY(100vh) rotate(0deg);
+            opacity: 0;
+        }
+        10% {
+            opacity: 1;
+        }
+        90% {
+            opacity: 1;
+        }
+        100% {
+            transform: translateY(-100vh) rotate(360deg);
+            opacity: 0;
+        }
+    }
+`;
+document.head.appendChild(style);
